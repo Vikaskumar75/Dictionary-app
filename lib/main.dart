@@ -1,5 +1,4 @@
-import 'package:flash_cards/home.dart';
-import 'package:flash_cards/screens/flash_card_screen.dart';
+import 'home.dart';
 import 'package:flutter/material.dart';
 
 void main() {

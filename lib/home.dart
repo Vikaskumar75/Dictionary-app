@@ -1,11 +1,9 @@
-import 'package:flash_cards/models/api_model.dart';
-import 'package:flash_cards/screens/falshcard_view.dart';
-import 'package:flash_cards/services/api.dart';
 import 'package:flip_card/flip_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'const.dart';
+import 'models/api_model.dart';
+import 'screens/falshcard_view.dart';
+import 'services/api.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -108,8 +106,8 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    if (_currentIndex == (words.length - 1))
-                                      return;
+                                    // if (_currentIndex == (words.length - 1))
+                                    //   return;
                                     _currentIndex++;
                                     getData();
                                   });
