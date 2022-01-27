@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 
@@ -13,24 +15,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
   bool isLoading = true;
   List<DataModel>? data;
+  String randomWord = 'apple';
+  API api = API();
 
   void getData() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-    data = await API.getAPI(_currentIndex);
-    API.getListData();
+    data = await api.getAPI(randomWord);
+    if (data!.isEmpty) {
+      pickRandomWord();
+      return;
+    }
     setState(() {
       isLoading = false;
     });
   }
 
+  void pickRandomWord() {
+    int i = Random().nextInt(api.words!.length);
+    setState(() {
+      randomWord = api.words![i];
+    });
+    getData();
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
@@ -41,7 +51,9 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(),
       body: SafeArea(
         child: isLoading
-            ? Center(child: const CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
             : ListView.builder(
                 itemCount: data!.length,
                 itemBuilder: (context, index) {
@@ -58,16 +70,20 @@ class _HomePageState extends State<HomePage> {
                               word: results.word,
                               origin: 'Origin : ' + results.origin,
                               partOfSpeech: 'Part Of Speech : ' +
-                                  results.meanings[index].partOfSpeech,
+                                  results.meanings[0].partOfSpeech,
                             ),
                             back: Card(
                               child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: 40, left: 20, right: 15, bottom: 20),
+                                padding: const EdgeInsets.only(
+                                  top: 40,
+                                  left: 20,
+                                  right: 15,
+                                  bottom: 20,
+                                ),
                                 child: Text(
                                   results.meanings[index].definitions[index]
                                       .definition,
-                                  style: TextStyle(fontSize: 26),
+                                  style: const TextStyle(fontSize: 26),
                                 ),
                               ),
                               // FlashcardView(
@@ -76,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Row(
@@ -88,14 +104,7 @@ class _HomePageState extends State<HomePage> {
                                   style: BorderStyle.solid,
                                   width: 2,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    if (_currentIndex == 0) return;
-
-                                    _currentIndex--;
-                                    getData();
-                                  });
-                                },
+                                onPressed: pickRandomWord,
                                 icon: Icon(Icons.chevron_left),
                                 label: Text('Prev')),
                             OutlineButton.icon(
@@ -104,14 +113,7 @@ class _HomePageState extends State<HomePage> {
                                   style: BorderStyle.solid,
                                   width: 2,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    // if (_currentIndex == (words.length - 1))
-                                    //   return;
-                                    _currentIndex++;
-                                    getData();
-                                  });
-                                },
+                                onPressed: pickRandomWord,
                                 icon: Icon(Icons.chevron_right),
                                 label: Text('Next')),
                           ],
